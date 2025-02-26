@@ -803,12 +803,38 @@ def print_system_info():
 def check_for_updates():
     """Проверяет наличие обновлений для скрипта."""
     logger.debug("Проверка обновлений")
-    current_version = "1.0.0"
-    latest_version = "1.0.1"  # Это значение может быть получено из удаленного источника
+    current_version = "0.9.0"
+    latest_version = get_latest_version()  # Получите последнюю версию из удаленного источника
     if current_version < latest_version:
         console.print("[yellow]Доступна новая версия скрипта. Пожалуйста, обновите.[/yellow]")
+        if console.input("[yellow]Хотите обновить сейчас? (y/n): [/yellow]").strip().lower() == 'y':
+            update_script()
     else:
         console.print("[green]У вас установлена последняя версия скрипта.[/green]")
+
+
+def get_latest_version():
+    """Получает последнюю версию скрипта из удаленного источника."""
+    # Пример получения версии (замените на реальную логику)
+    return "1.0.1"
+
+
+def update_script():
+    """Обновляет скрипт до последней версии."""
+    logger.debug("Обновление скрипта")
+    try:
+        url = "https://example.com/latest_script.py"  # Убедитесь, что это реальный URL
+        response = requests.get(url)
+        if response.status_code == 200:
+            script_path = os.path.abspath(__file__)
+            with open(script_path, 'wb') as f:
+                f.write(response.content)
+            console.print("[green]✔ Скрипт успешно обновлен. Перезапустите программу.[/green]")
+        else:
+            console.print("[red]✗ Не удалось загрузить обновление.[/red]")
+    except Exception as e:
+        logger.error(f"Ошибка обновления скрипта: {str(e)}")
+        console.print("[red]✗ Ошибка обновления скрипта.[/red]")
 
 
 def backup_settings():
@@ -823,23 +849,6 @@ def backup_settings():
     except Exception as e:
         logger.error(f"Ошибка создания бэкапа: {str(e)}")
         console.print("[red]✗ Ошибка создания бэкапа.[/red]")
-
-
-def update_script():
-    """Обновляет скрипт до последней версии."""
-    logger.debug("Обновление скрипта")
-    try:
-        url = "http://example.com/latest_script.py"  # Замените на реальный URL
-        response = requests.get(url)
-        if response.status_code == 200:
-            with open(__file__, 'wb') as f:
-                f.write(response.content)
-            console.print("[green]✔ Скрипт успешно обновлен. Перезапустите программу.[/green]")
-        else:
-            console.print("[red]✗ Не удалось загрузить обновление.[/red]")
-    except Exception as e:
-        logger.error(f"Ошибка обновления скрипта: {str(e)}")
-        console.print("[red]✗ Ошибка обновления скрипта.[/red]")
 
 
 def apply_all_optimizations():
